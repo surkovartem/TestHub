@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NordClan TestHub - Генератор Вопросов
 
-## Getting Started
+## Обзор
 
-First, run the development server:
+NordClan TestHub - это веб-приложение, предназначенное для генерации вопросов для собеседований и вопросов для обучения ботов. Пользователи могут настраивать генерацию вопросов, выбирая различные параметры:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+*   **Режим:** "Интервью" (вопросы с ответами) или "Бот" (вопросы с вариантами ответов в виде изображений).
+*   **Направление:** Техническая область, такая как Backend, Frontend, ML или Android.
+*   **Вариант:** Уточнение направления, например, Java, React, TensorFlow, Kotlin и т.д. (зависит от выбранного направления).
+*   **Грейд:** Уровень опыта, для которого предназначены вопросы (Junior, Middle, Senior).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Приложение генерирует набор вопросов на основе выбранных параметров. Для режима "Интервью" предоставляются полные ответы и возможность скачивания. В режиме "Бот" вопросы отображаются в виде изображений (с использованием canvas) для возможной интеграции в ботов, а также предоставляются варианты ответов в интерфейсе.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Описание Файлов:**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+*   **`src/app/page.tsx`**:
+    *   **Главная страница приложения.** Содержит компонент `HomePage`, который является основной страницей генератора вопросов.
+    *   Управляет состоянием приложения, включая режим генерации, направление, грейд, шаги визарда, сгенерированные вопросы и т.д.
+    *   Отвечает за обработку действий пользователя, таких как генерация вопросов, навигация по шагам визарда, скачивание вопросов.
+    *   Компонует и отображает различные секции страницы: `WizardPanel`, `TelegramBotLinkPanel`, `GeneratedQuestionsSection`.
 
-## Learn More
+*   **`src/app/layout.tsx`**:
+    *   **Корневой макет приложения.** Определяет общую структуру HTML для всего приложения (`<html>`, `<body>`).
+    *   Подключает глобальные стили (`globals.css`).
+    *   Инициализирует и подключает используемые шрифты (Geist Fonts).
+    *   Задает метаданные по умолчанию для всего приложения (заголовок, описание).
 
-To learn more about Next.js, take a look at the following resources:
+*   **`src/globals.css`**:
+    *   **Глобальные стили CSS.** Содержит общие стили для всего приложения, включая:
+        *   Импорты директив Tailwind CSS (`@tailwind base`, `@tailwind components`, `@tailwind utilities`).
+        *   Базовые стили для `body` и других глобальных элементов.
+        *   Определение шрифтов и цветовой схемы по умолчанию.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+*   **`src/app/components/`**:
+    *   **Папка с React-компонентами**, которые используются для построения пользовательского интерфейса страницы `HomePage`. Каждый файл в этой папке представляет собой отдельный, переиспользуемый UI-компонент.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    *   **`BotQuestionItem.tsx`**:
+        *   Компонент для отображения **одного вопроса в режиме "Бот"** в списке сгенерированных вопросов.
+        *   Отвечает за отображение вопроса (с использованием `QuestionImage`) и вариантов ответов.
+        *   Обеспечивает функциональность раскрытия/скрытия вариантов ответов.
 
-## Deploy on Vercel
+    *   **`GeneratedQuestionsSection.tsx`**:
+        *   Компонент, отображающий **целую секцию сгенерированных вопросов** (как для режима "Интервью", так и для режима "Бот").
+        *   Управляет отображением заголовка секции ("Сгенерированные вопросы...") и кнопками "Скачать" и "Сгенерировать заново".
+        *   Условно рендерит список `InterviewQuestionItem` или `BotQuestionItem` в зависимости от выбранного режима.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    *   **`InterviewQuestionItem.tsx`**:
+        *   Компонент для отображения **одного вопроса в режиме "Интервью"** в списке сгенерированных вопросов.
+        *   Отвечает за отображение вопроса и ответа.
+        *   Обеспечивает функциональность раскрытия/скрытия ответа при клике на вопрос.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    *   **`QuestionImage.tsx`**:
+        *   Компонент, который **рендерит текст вопроса в виде изображения**, используя HTML5 Canvas.
+        *   Используется для отображения вопросов в режиме "Бот", чтобы их можно было использовать в Telegram-боте (изображение вместо текста).
+
+    *   **`TelegramBotLinkPanel.tsx`**:
+        *   Компонент, отображающий **панель со ссылкой на Telegram-бота**.
+        *   Виден только в режиме "Бот".
+        *   Генерирует и отображает уникальную ссылку на Telegram-бота на основе выбранных параметров генерации вопросов.
+
+    *   **`WizardPanel.tsx`**:
+        *   Компонент, реализующий **пошаговый визард генерации вопросов**.
+        *   Содержит шаги: выбор режима, направления, варианта и грейда.
+        *   Отображает элементы управления для каждого шага (выпадающие списки, кнопки "Далее", "Назад", "Сгенерировать").
+        *   Управляет навигацией между шагами визарда.
+
+*   **`src/app/utils/`**:
+    *   **Папка с утилитарными функциями и определениями типов**, которые используются в приложении, но не являются React-компонентами.
+
+    *   **`questionGenerators.ts`**:
+        *   Содержит **функции для генерации данных о вопросах**.
+        *   Включает функции `createInterviewQuestions` (для создания массива вопросов для интервью), `createBotQuestions` (для создания массива вопросов для бота) и `generateUniqueId` (для генерации уникального ID).
+        *   Изолирует логику генерации вопросов от UI-компонентов.
+
+    *   **`types.ts`**:
+        *   Содержит **определения TypeScript типов и интерфейсов**, используемых в приложении.
+        *   Определяет типы `Direction`, `Grade`, `Mode`, интерфейсы `InterviewItem`, `BotItem` и mapping `subOptionMapping`.
+        *   Централизованное место для хранения типов, чтобы обеспечить консистентность и переиспользуемость.
+
+## Запуск Приложения
+
+Инструкции по запуску, сборке и развертыванию приложения можно найти в секции "Getting Started" выше.
+
+## Вклад
+
+[Здесь можно добавить информацию о правилах внесения вклада, если это необходимо]
+
+## Лицензия
