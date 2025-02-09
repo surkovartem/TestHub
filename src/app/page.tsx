@@ -174,13 +174,18 @@ export default function HomePage(): JSX.Element {
     return (
         // Основной контейнер страницы
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white text-gray-900 font-sans">
-            {/* Шапка страницы (Header) - компонент для заголовка и навигации */}
-            <header className="bg-gradient-to-r from-blue-500 to-teal-400 shadow-lg">
+            <header className="bg-white shadow-lg">
                 <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-                    <h1 className="text-3xl font-bold text-white">NordClan: TestHub</h1>
+                    <div className="flex flex-col"> {/* Удален класс items-center */}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src="/logo.svg" alt="Логотип" className="h-16 w-auto"/>
+                        <p className="text-md text-gray-700 mt-1 text-left">
+                            TestHub Service
+                        </p>
+                    </div>
                     <nav className="flex space-x-6">
-                        <span className="text-white hover:underline cursor-pointer">Генератор вопросов</span>
-                        <span className="text-white hover:underline cursor-pointer">Банк вопросов</span>
+                        <span className="text-gray-900 hover:underline cursor-pointer">Генератор вопросов</span>
+                        <span className="text-gray-900 hover:underline cursor-pointer">Банк вопросов</span>
                     </nav>
                 </div>
             </header>
